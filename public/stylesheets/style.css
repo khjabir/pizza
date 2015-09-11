@@ -20,14 +20,14 @@ box-shadow:  -5px 5px 6px 0px rgb(156, 153, 153);
 }	
 
 div.img img {
-    display: inline;
+    /*display: inline;*/
     margin: 5px;
     border: 1px solid #ffffff;
 }
 
 div.img a:hover img {
-    margin: 7px;
-    padding: 7px;
+    margin: 15px;
+    padding: 0px;
 
 }
 

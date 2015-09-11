@@ -1,31 +1,38 @@
-
+<meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
 
 <link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
 <div>
-<a href="#/home">Back</a>
-<div>
-	<br>
-</div>
-</div>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">Back</a>
+    </div>
+    <div>
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="#/{{details.name}}">{{details.name}}</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
 <center>
-	<div class="piz" width="50%" align="center">
-		<table width="100%" height="100%">
-		<tr align="center" width="100%" height="100%">
-			<td colspan= "2" width="100%" height="100%">
-			<img ng-src="{{details.image}}" width="300">
+	<div class="piz">
+		<table>
+		<tr align="center">
+			<td rowspan="2">
+			<img style="float:left" ng-src="{{details.image}}" width="300">
+		</td>
+		<td width="100%">
+			<h1>&#8377{{details.rate}}/-</h1>
 		</td>
 		</tr>
-		<tr align="center">	
-			<td colspan= "2" align="center">
-			<b>{{details.name}}</b>
-			</td>
-		</tr >
-		<tr align="center">
-			<td align="center" width="50%">
-			&#8377{{details.rate}}/-
-			</td>
-			<td align="center" width="50%">
+		<tr>
+			<td align="center" width="100%">
 			<select>
 				<option value="0">Quantity</option>
   				<option value="1">1</option>
@@ -38,8 +45,18 @@
 			</select>
 			</td>
 		</tr>
+		</table>
+		<table width="37.25%">
+		<tr>
+			
+		</tr>
+		<tr>	
+			<td align="center">
+			<b>{{details.name}}</b>
+			</td>
+		</tr >
 		<tr align="center">
-			<td colspan="2" align="center"> 
+			<td> 
 			{{details.description}}
 			</td>
 		</tr>
@@ -50,6 +67,6 @@
 	<br>
 </div>
 <div>
-	<center><a href="#/home" onclick="alert('Added to Cart')">Add To Cart</a>
+<center><button type="button" class="btn btn-success" >Add to Cart</button></center>
 	</center>
 <div>
