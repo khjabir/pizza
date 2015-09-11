@@ -1,0 +1,54 @@
+<html ng-app="pizzaApp">
+  <head>
+    <meta charset="utf-8">
+    <title>PIZZA STORE</title>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.1/angular.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.10/angular-route.min.js"></script>
+
+    <script>
+      var pizzaApp = angular.module('pizzaApp', ['ngRoute']);
+
+      pizzaApp.config(function($routeProvider) {
+        $routeProvider.
+          when('/', {
+            templateUrl: 'pizzaList.html',
+            controller: 'pizzaCtrl'
+          }).
+          when('/home', {
+            templateUrl: 'pizzaList.html',
+            controller: 'pizzaCtrl'
+          }).
+          when('/order', {
+            template: '<h1>Order Summary</h1>',
+            //controller: 'pizzaCtrl'
+          }).
+          when('/:pizzadetails', {
+            templateUrl: 'pizzaDetails.html',
+            controller: 'pizzaDetailCtrl'
+          }).
+          otherwise({
+            redirectTo: '/'
+          });
+      });
+
+
+      pizzaApp.controller('pizzaCtrl', function ($scope, $http){
+        $http.post('/pizzadata').success(function(data) {
+          $scope.details = data;
+        });
+      });
+
+      pizzaApp.controller('pizzaDetailCtrl', function ($scope, $routeParams, $http){
+        $scope.name = $routeParams.pizzadetails;
+
+        $http.post('/pizzadata').success(function(data) {
+          $scope.details = data.filter(function(entry){
+            return entry.name === $scope.name;
+          })[0];
+        });
+      });
+    </script>
+  </head>
+  <body ng-view>
+  </body>
+</html>
