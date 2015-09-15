@@ -16,19 +16,19 @@
       <ul class="nav navbar-nav">
         <li class="active"><a href="#/home">Home</a></li>
       </ul>
-      <ul class="nav navbar-nav navbar-right">
-        <li><a>Amount:{{amount|currency:"&#8377;"}}/-</a></li>
-      </ul>
+      <!-- <ul class="nav navbar-nav navbar-right">
+        <li><a>Amount:{{total|currency:"&#8377;"}}/-</a></li>
+      </ul> -->
     </div>
   </div>
 </nav>
 </div>
 <div>
   <center>
-    <input type = "text" ng-model = "name" placeholder="Name" value="Jabir"><br>
-    <input type = "text" ng-model = "address" placeholder = "Address"><br>
-    <input type = "number" ng-model = "mob" placeholder = "Mobile No."><br>
-    <a href="#/home">Finish</a>
+    <input type = "text" ng-model = "user.name" placeholder="Name" value="Jabir"><br>
+    <input type = "text" ng-model = "user.address" placeholder = "Address"><br>
+    <input type = "number" ng-model = "user.mob" placeholder = "Mobile No."><br>
+    <a href="#" alert('Ordered Successfully') ng-click="finishOrder()">Finish</a>
   </center>
 </div>
 </body>

@@ -9,24 +9,25 @@
 <div>
 <nav class="navbar navbar-inverse navbar-fixed-top">
   <div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand" href="#/{{cartService.lastPage}}" alert('{{cartService.lastPage}}')>Back</a>
-    </div>
     <div>
       <ul class="nav navbar-nav">
         <li class="active"><a href="#/home">Home</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li><a href="#/userdetails">Place Order</a></li>
-        <!-- <li><a>Amount:{{q*amount|currency:"&#8377;"}}/-</a></li> -->
+        <li><a>Total Amount:{{total|currency:"&#8377;"}}/-</a></li>
       </ul>
     </div>
   </div>
 </nav>
 </div>
-<h1>Order Summary!!</h1>
+<h1>Order Summary</h1>
 <p ng-repeat="pizza in pizzaList">
-id: {{pizza.id}}<br>
+<!-- id: {{pizza.id}}<br> -->
 Name: {{pizza.name}}<br>
-Quantity: {{pizza.qty}}<br>
+Quantity: {{pizza.qty}} <br>
+Amount: {{pizza.cost}} <br>
+
+<a href="" ng-click="delete(pizza.id,pizza.cost)">Remove</a><br>
 </p>
+<center><a class="navbar-brand" href="#/home">Add More</a></center>

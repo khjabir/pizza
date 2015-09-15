@@ -12,19 +12,18 @@ router.all('/', function(req, res, next) {
       console.log('Unable to connect to the mongoDB server. Error:', err);
     } else {
       console.log('Connection established to', url);
-      var collection = db.collection('pizzaCollection');
+      var collection = db.collection('orderDetails');
 
-      collection.find().toArray(function (err, result) {
-        if (err) {
-          console.log(err);
-        } else if (result.length) {
-          console.log('Found:', JSON.stringify(result,null,2));
-          res.send(result);
-        } else {
-          console.log('No document(s) found with defined "find" criteria!');
-          res.send("Nothing Found")
-        }
-      });
+      collection.insert(req.body, function (err, result) {
+            if (err) {
+              console.log(err);
+            } else {
+              console.log('Inserted %d documents into the "pizzaOrder" collection. The documents inserted with "_id" are:', result.length, result);
+            }
+        res.send('Got it here'+JSON.stringify(req.body));
+        });
+
+      
     }
   });
 });

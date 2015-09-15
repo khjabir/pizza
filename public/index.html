@@ -1,4 +1,4 @@
-<html ng-app="pizzaApp" ng-init="finalCost = 0">
+<html ng-app="pizzaApp">
   <head>
     <meta charset="utf-8">
     <title>Xperion Pizza</title>
@@ -15,24 +15,17 @@
       });
 
     pizzaApp.service('cartService', function () {
-    var uid = 1;
+    var pizid = 0;
     var pizzaArray = [];
     this.save = function (pizza) {
         if (pizza.id == null) {
-            pizza.id = uid++;
+            pizza.id = pizid++;
             pizzaArray.push(pizza);
         } else {
             for (i in pizzaArray) {
                 if (pizzaArray[i].id == pizza.id) {
                     pizzaArray[i] = pizza;
                 }
-            }
-        }
-    }
-    this.get = function (id) {
-        for (i in pizzaArray) {
-            if (pizzaArray[i].id == id) {
-                return pizzaArray[i];
             }
         }
     }
@@ -47,11 +40,6 @@
         return pizzaArray;
     }
 });
-
-
-
-
-
 
       pizzaApp.config(function($routeProvider) {
         $routeProvider.
@@ -97,27 +85,31 @@
           scope.findCost = function() {
             scope.cost = costService.costVal(scope.newPizza.qty,scope.details.rate);
             scope.newPizza.name = scope.details.name;
+            scope.newPizza.cost = scope.cost;
           }
-
-          // console.log(scope.details);
-          // scope.newPizza.name = scope.details.name;
 
         });
 
         scope.pizzaList = cartService.list();
-
-
-        // scope.newPizza.name = scope.details.name;
-
         scope.savePizza = function () {
-        cartService.save(scope.newPizza);
-        scope.newPizza = {};
+          cartService.save(scope.newPizza);
+          scope.newPizza = {};
         }
       }]);
 
 
       pizzaApp.controller('pizzaOrderCtrl', ['$scope', 'cartService', function (scope, cartService){
         scope.pizzaList = cartService.list();
+        scope.delete = function (id,cost) {
+          scope.total -= cost;
+          cartService.delete(id);
+        }
+
+        scope.total = 0;
+        for (var i = 0; i < scope.pizzaList.length; i++) {
+          scope.total += scope.pizzaList[i].cost;
+        };
+
       }]);
 
 
@@ -125,6 +117,27 @@
         http.post('/pizzadata').success(function(data) {
           scope.details = data;
         });
+        scope.finishOrder = function() {
+          scope.pizzaList = cartService.list();
+          scope.user.order = scope.pizzaList;
+          console.log("to be sent",scope.user);
+
+          http({
+          method  : 'POST',
+          url     : '/insertPizza',
+          data    : scope.user,
+          headers : {'Content-Type': 'application/json'} 
+         })
+          .success(function(data) {
+            if (data.errors) {
+              scope.errorName = data.errors.name;
+              scope.errorUserName = data.errors.username;
+              scope.errorEmail = data.errors.email;
+            } else {
+              scope.message = data.message;
+            }
+          });
+        }
       }]);
 
     </script>
