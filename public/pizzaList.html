@@ -7,8 +7,8 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 </head>
-<body>
 
+<body>
 <nav class="navbar navbar-inverse navbar-fixed-top">
   <div class="container-fluid">
     <div class="navbar-header">
@@ -17,6 +17,11 @@
     <div>
       <ul class="nav navbar-nav">
         <li class="active"><a href="#">Home</a></li>
+      </ul>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a>Place Order</a></li>
+        <!-- <li><a>Amount:{{q*amount|currency:"&#8377;"}}/-</a></li> -->
       </ul>
     </div>
   </div>
@@ -28,13 +33,11 @@
   </div>
 </div>
 
-
-
 <div>
-<input type = "text" name="search" ng-model = "query" Placeholder="Search">
+<center><input type = "text" name="search" ng-model = "query" Placeholder="Search"></center>
 </div>
-<div class="img" ng-repeat="pizza in details | filter:query">
-	<a href = "#/{{pizza.name}}">
+<div class="img" ng-repeat="pizza in details | filter:query | orderBy:'name'">
+	<a href = "#/{{pizza.name}}" style="text-decoration:none;">
 		<img ng-src="{{pizza.image}}" width="100">
 	</a>
 	<br>{{pizza.name}}

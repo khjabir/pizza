@@ -16,7 +16,7 @@ div.img {
     float: left;
     text-align: center;
 
-box-shadow:  -5px 5px 6px 0px rgb(156, 153, 153);
+    box-shadow:  -5px 5px 6px 0px rgb(156, 153, 153);
 }	
 
 div.img img {
@@ -49,5 +49,5 @@ div.piz {
 	line-height: 1.3em;
 	border-radius: 5px;
 
-box-shadow:  -5px 5px 6px 0px rgb(156, 153, 153);
+  box-shadow:  -5px 5px 6px 0px rgb(156, 153, 153);
 }

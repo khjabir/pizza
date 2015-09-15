@@ -1,72 +1,77 @@
-<meta charset="utf-8">
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
   <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
 
-
-<link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
+<body>
 <div>
-
-<nav class="navbar navbar-inverse navbar-fixed-top">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand" href="#">Back</a>
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+     <div class="navbar-header">
+       <a class="navbar-brand" href="#">Back</a>
+     </div>
+     <div>
+       <ul class="nav navbar-nav">
+         <li class="active"><a href="#/{{details.name}}" ng-model="newPizza.name">{{details.name}}</a></li>
+       </ul>
+       <ul class="nav navbar-nav navbar-right">
+         <li><a>Place Order</a></li>
+         <li><a>Amount:{{cost|currency:"&#8377;"}}/-</a></li>
+       </ul>
+     </div>
     </div>
-    <div>
-      <ul class="nav navbar-nav">
-        <li class="active"><a href="#/{{details.name}}">{{details.name}}</a></li>
-      </ul>
-    </div>
-  </div>
-</nav>
+  </nav>
+</div>
 
 <center>
-	<div class="piz">
-		<table>
-		<tr align="center">
-			<td rowspan="2">
-			<img style="float:left" ng-src="{{details.image}}" width="300">
-		</td>
-		<td width="100%">
-			<h1>&#8377{{details.rate}}/-</h1>
-		</td>
-		</tr>
-		<tr>
-			<td align="center" width="100%">
-			<select>
-				<option value="0">Quantity</option>
-  				<option value="1">1</option>
-  				<option value="2">2</option>
-  				<option value="3">3</option>
-  				<option value="4">4</option>
-  				<option value="5">5</option>
-  				<option value="6">6</option>
-  				<option value="7">7</option>
-			</select>
-			</td>
-		</tr>
-		</table>
-		<table width="37.25%">
-		<tr>
-			
-		</tr>
-		<tr>	
-			<td align="center">
-			<b>{{details.name}}</b>
-			</td>
-		</tr >
-		<tr align="center">
-			<td> 
-			{{details.description}}
-			</td>
-		</tr>
-		</table>
-	</div>
+  <div class="piz">
+    <table>
+      <tr align="center">
+        <td rowspan="2">
+          <img style="float:left" ng-src="{{details.image}}" width="300">
+        </td>
+        <td width="100%">
+          <h1>{{details.rate|currency:"&#8377;"}}/-</h1>
+        </td>
+      </tr>
+      <tr>
+        <td align="center" width="100%">
+          <select name="quantity" ng-model="newPizza.qty" ng-click="findCost()">
+            <option value="">---Quantity---</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+          </select>
+        </td>
+      </tr>
+    </table>
+    <table width="37.25%">
+      <tr>
+      </tr>
+      <tr>	
+        <td align="center">
+          <b>{{details.name}}</b>
+        </td>
+      </tr >
+      <tr align="center">
+        <td>
+          {{details.description}}
+        </td>
+      </tr>
+    </table>
+  </div>
 </center>
 <div>
 	<br>
 </div>
 <div>
-<center><button type="button" class="btn btn-success" >Add to Cart</button></center>
-	</center>
+<!-- <center><button type="button" class="btn btn-success" onclick="alert('Added to Cart')" >Add to Cart</button></center> -->
+  <center><a ng-click="savePizza()" href="#/order">Add To Cart</a></center>
+<!-- <center><button type="button" class="btn btn-success" ng-click="add()" >Add to Cart</button></center> -->
 <div>
+</body>

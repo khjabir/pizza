@@ -14,7 +14,7 @@ router.all('/', function(req, res, next) {
       console.log('Connection established to', url);
       var collection = db.collection('imagetest');
 
-      collection.find().sort({"name":1}).toArray(function (err, result) {
+      collection.find().toArray(function (err, result) {
         if (err) {
           console.log(err);
         } else if (result.length) {

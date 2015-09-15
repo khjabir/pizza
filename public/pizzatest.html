@@ -1,12 +1,57 @@
-<html ng-app="pizzaApp">
+<html ng-app="pizzaApp" ng-init="finalCost = 0">
   <head>
     <meta charset="utf-8">
-    <title>PIZZA STORE</title>
+    <title>Xperion Pizza</title>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.1/angular.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.10/angular-route.min.js"></script>
 
     <script>
       var pizzaApp = angular.module('pizzaApp', ['ngRoute']);
+
+      pizzaApp.service('costService', function() {
+        this.costVal = function(a,b) {
+          return a * b;
+        };
+      });
+
+    pizzaApp.service('cartService', function () {
+    var uid = 1;
+    var pizzaArray = [];
+    this.save = function (pizza) {
+        if (pizza.id == null) {
+            pizza.id = uid++;
+            pizzaArray.push(pizza);
+        } else {
+            for (i in pizzaArray) {
+                if (pizzaArray[i].id == pizza.id) {
+                    pizzaArray[i] = pizza;
+                }
+            }
+        }
+    }
+    this.get = function (id) {
+        for (i in pizzaArray) {
+            if (pizzaArray[i].id == id) {
+                return pizzaArray[i];
+            }
+        }
+    }
+    this.delete = function (id) {
+        for (i in pizzaArray) {
+            if (pizzaArray[i].id == id) {
+                pizzaArray.splice(i, 1);
+            }
+        }
+    }
+    this.list = function () {
+        return pizzaArray;
+    }
+});
+
+
+
+
+
 
       pizzaApp.config(function($routeProvider) {
         $routeProvider.
@@ -19,8 +64,12 @@
             controller: 'pizzaCtrl'
           }).
           when('/order', {
-            template: '<h1>Order Summary</h1>',
-            //controller: 'pizzaCtrl'
+            templateUrl: 'ordersummary.html',
+            controller: 'pizzaOrderCtrl'
+          }).
+          when('/userdetails', {
+            templateUrl: 'userDetails.html',
+            controller: 'userDetailCtrl'
           }).
           when('/:pizzadetails', {
             templateUrl: 'pizzaDetails.html',
@@ -31,22 +80,53 @@
           });
       });
 
+      pizzaApp.controller('pizzaCtrl',['$scope', '$http', function (scope, http){
+        http.post('/pizzadata').success(function(data) {
+          scope.details = data;
 
-      pizzaApp.controller('pizzaCtrl', function ($scope, $http){
-        $http.post('/pizzadata').success(function(data) {
-          $scope.details = data;
         });
-      });
+      }]);
 
-      pizzaApp.controller('pizzaDetailCtrl', function ($scope, $routeParams, $http){
-        $scope.name = $routeParams.pizzadetails;
+      pizzaApp.controller('pizzaDetailCtrl',['$scope', '$routeParams', '$http', 'cartService', 'costService', function (scope, routeParams, http, cartService, costService){
+        scope.name = routeParams.pizzadetails;
 
-        $http.post('/pizzadata').success(function(data) {
-          $scope.details = data.filter(function(entry){
-            return entry.name === $scope.name;
+        http.post('/pizzadata').success(function(data) {
+          scope.details = data.filter(function(entry){
+            return entry.name === scope.name;
           })[0];
+          scope.findCost = function() {
+            scope.cost = costService.costVal(scope.newPizza.qty,scope.details.rate);
+            scope.newPizza.name = scope.details.name;
+          }
+
+          // console.log(scope.details);
+          // scope.newPizza.name = scope.details.name;
+
         });
-      });
+
+        scope.pizzaList = cartService.list();
+
+
+        // scope.newPizza.name = scope.details.name;
+
+        scope.savePizza = function () {
+        cartService.save(scope.newPizza);
+        scope.newPizza = {};
+        }
+      }]);
+
+
+      pizzaApp.controller('pizzaOrderCtrl', ['$scope', 'cartService', function (scope, cartService){
+        scope.pizzaList = cartService.list();
+      }]);
+
+
+      pizzaApp.controller('userDetailCtrl',['$scope', '$http', 'cartService', function (scope, http, cartService){
+        http.post('/pizzadata').success(function(data) {
+          scope.details = data;
+        });
+      }]);
+
     </script>
   </head>
   <body ng-view>
