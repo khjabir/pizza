@@ -1,9 +1,55 @@
 <!DOCTYPE html>
-<html>
+<html ng-app = "pizzaAdmin">
+<link rel="stylesheet" href = "http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.1/angular.min.js"></script>
 <head>
-	<title>pizza Orders</title>
 </head>
+<script>
+	var i=0;
+	var adminApp = angular.module('pizzaAdmin',[]);
+	adminApp.controller('orderCtrl',['$scope', '$http', function(scope,http) {
+		http.post('/adminCtrl').success(function(data) {
+          scope.orders = data;
+          scope.items = data[0].order;
+		});
+	}]);
+</script>
 <body>
-
+<table ng-controller="orderCtrl" class="table table-striped">
+  <thead>
+    <tr>
+      <th><center>Name</center></th>
+      <th><center>Address</center></th>
+      <th><center>Mob</center></th>
+      <th><center>Order</center></th>
+      <!-- <th><center>Status</center></th> -->
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="order in orders">
+    <td><center>{{order.name}}</center></td>
+      <td><center>{{order.address}}</center></td>
+      <td><center>{{order.mob}}</center></td>
+      <td><center>
+      <table>
+      <thead>
+      	<th><center>Pizza</center></th>
+      	<th><center>Quantity</center></th>
+      </thead>
+      <tr ng-repeat="item in items">
+      	<td>{{item.name}}</td>
+      	<td><center>{{item.qty}}</center></td>
+      </tr>
+      </table>
+      </center>
+      </td>
+      <!-- <td><center>
+        <button class="btn" ng-click = "deliver()">{{order.orderStatus}}
+        </button>
+        </center>
+      </td> -->
+    </tr>
+  </tbody>
+</table>
 </body>
 </html>

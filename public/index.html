@@ -1,5 +1,6 @@
 <html ng-app="pizzaApp">
   <head>
+  </head>
     <meta charset="utf-8">
     <title>Xperion Pizza</title>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.1/angular.min.js"></script>
@@ -14,134 +15,130 @@
         };
       });
 
-    pizzaApp.service('cartService', function () {
-    var pizid = 0;
-    var pizzaArray = [];
-    this.save = function (pizza) {
+      pizzaApp.service('cartService', function () {
+      var pizid = 0;
+      var pizzaArray = [];
+      this.save = function (pizza) {
         if (pizza.id == null) {
-            pizza.id = pizid++;
-            pizzaArray.push(pizza);
+          pizza.id = pizid++;
+          pizzaArray.push(pizza);
         } else {
-            for (i in pizzaArray) {
-                if (pizzaArray[i].id == pizza.id) {
-                    pizzaArray[i] = pizza;
-                }
+          for (i in pizzaArray) {
+            if (pizzaArray[i].id == pizza.id) {
+              pizzaArray[i] = pizza;
             }
+          }
         }
-    }
-    this.delete = function (id) {
+      }
+      this.delete = function (id) {
         for (i in pizzaArray) {
-            if (pizzaArray[i].id == id) {
-                pizzaArray.splice(i, 1);
-            }
+          if (pizzaArray[i].id == id) {
+            pizzaArray.splice(i, 1);
+          }
         }
-    }
-    this.list = function () {
+      }
+      this.deleteAll = function () {
+        pizzaArray.splice(0, pizzaArray.length);
+      }
+      this.list = function () {
         return pizzaArray;
-    }
-});
+      }
+    });
 
-      pizzaApp.config(function($routeProvider) {
-        $routeProvider.
-          when('/', {
-            templateUrl: 'pizzaList.html',
-            controller: 'pizzaCtrl'
-          }).
-          when('/home', {
-            templateUrl: 'pizzaList.html',
-            controller: 'pizzaCtrl'
-          }).
-          when('/order', {
-            templateUrl: 'ordersummary.html',
-            controller: 'pizzaOrderCtrl'
-          }).
-          when('/userdetails', {
-            templateUrl: 'userDetails.html',
-            controller: 'userDetailCtrl'
-          }).
-          when('/:pizzadetails', {
-            templateUrl: 'pizzaDetails.html',
-            controller: 'pizzaDetailCtrl'
-          }).
-          otherwise({
-            redirectTo: '/'
-          });
+    pizzaApp.config(function($routeProvider) {
+      $routeProvider.
+        when('/', {
+          templateUrl: 'pizzaList.html',
+          controller: 'pizzaCtrl'
+        }).
+        when('/home', {
+          templateUrl: 'pizzaList.html',
+          controller: 'pizzaCtrl'
+        }).
+        when('/order', {
+          templateUrl: 'ordersummary.html',
+          controller: 'pizzaOrderCtrl'
+        }).
+        when('/userdetails', {
+          templateUrl: 'userDetails.html',
+          controller: 'userDetailCtrl'
+        }).
+        when('/:pizzadetails', {
+          templateUrl: 'pizzaDetails.html',
+          controller: 'pizzaDetailCtrl'
+        }).
+        otherwise({
+          redirectTo: '/'
+        });
+    });
+
+    pizzaApp.controller('pizzaCtrl',['$scope', '$http', function (scope, http){
+      http.post('/pizzadata').success(function(data) {
+        scope.details = data;
+      });
+    }]);
+
+    pizzaApp.controller('pizzaDetailCtrl',['$scope', '$routeParams', '$http', 'cartService', 'costService', function (scope, routeParams, http, cartService, costService){
+      scope.name = routeParams.pizzadetails;
+      
+      http.post('/pizzadata').success(function(data) {
+        scope.details = data.filter(function(entry){
+          return entry.name === scope.name;
+        })[0];
+        scope.findCost = function() {
+          scope.cost = costService.costVal(scope.newPizza.qty,scope.details.rate);
+          scope.newPizza.name = scope.details.name;
+          scope.newPizza.cost = scope.cost;
+        }
       });
 
-      pizzaApp.controller('pizzaCtrl',['$scope', '$http', function (scope, http){
-        http.post('/pizzadata').success(function(data) {
-          scope.details = data;
+      scope.pizzaList = cartService.list();
+      scope.savePizza = function () {
+        cartService.save(scope.newPizza);
+        scope.newPizza = {};
+      }
+    }]);
 
-        });
-      }]);
+    pizzaApp.controller('pizzaOrderCtrl', ['$scope', 'cartService', function (scope, cartService){
+      scope.pizzaList = cartService.list();
+      scope.delete = function (id,cost) {
+        scope.total -= cost;
+        cartService.delete(id);
+      }
 
-      pizzaApp.controller('pizzaDetailCtrl',['$scope', '$routeParams', '$http', 'cartService', 'costService', function (scope, routeParams, http, cartService, costService){
-        scope.name = routeParams.pizzadetails;
+      scope.total = 0;
+      for (var i = 0; i < scope.pizzaList.length; i++) {
+        scope.total += scope.pizzaList[i].cost;
+      };
+    }]);
 
-        http.post('/pizzadata').success(function(data) {
-          scope.details = data.filter(function(entry){
-            return entry.name === scope.name;
-          })[0];
-          scope.findCost = function() {
-            scope.cost = costService.costVal(scope.newPizza.qty,scope.details.rate);
-            scope.newPizza.name = scope.details.name;
-            scope.newPizza.cost = scope.cost;
-          }
-
-        });
-
+    pizzaApp.controller('userDetailCtrl',['$scope', '$http', 'cartService', function (scope, http, cartService){
+      http.post('/pizzadata').success(function(data) {
+        scope.details = data;
+      });
+      scope.finishOrder = function() {
         scope.pizzaList = cartService.list();
-        scope.savePizza = function () {
-          cartService.save(scope.newPizza);
-          scope.newPizza = {};
-        }
-      }]);
-
-
-      pizzaApp.controller('pizzaOrderCtrl', ['$scope', 'cartService', function (scope, cartService){
-        scope.pizzaList = cartService.list();
-        scope.delete = function (id,cost) {
-          scope.total -= cost;
-          cartService.delete(id);
-        }
-
-        scope.total = 0;
-        for (var i = 0; i < scope.pizzaList.length; i++) {
-          scope.total += scope.pizzaList[i].cost;
-        };
-
-      }]);
-
-
-      pizzaApp.controller('userDetailCtrl',['$scope', '$http', 'cartService', function (scope, http, cartService){
-        http.post('/pizzadata').success(function(data) {
-          scope.details = data;
-        });
-        scope.finishOrder = function() {
-          scope.pizzaList = cartService.list();
-          scope.user.order = scope.pizzaList;
-          console.log("to be sent",scope.user);
-
-          http({
+        scope.user.order = scope.pizzaList;
+        scope.user.orderStatus = "Not Delivered"
+        http({
           method  : 'POST',
           url     : '/insertPizza',
           data    : scope.user,
           headers : {'Content-Type': 'application/json'} 
          })
-          .success(function(data) {
-            if (data.errors) {
-              scope.errorName = data.errors.name;
-              scope.errorUserName = data.errors.username;
-              scope.errorEmail = data.errors.email;
-            } else {
-              scope.message = data.message;
-            }
-          });
-        }
-      }]);
-
+        .success(function(data) {
+          if (data.errors) {
+            scope.errorName = data.errors.name;
+            scope.errorUserName = data.errors.username;
+            scope.errorEmail = data.errors.email;
+          } else {
+            scope.message = data.message;
+          }
+        });
+        cartService.deleteAll();
+      }
+    }]);
     </script>
-  </head>
   <body ng-view>
   </body>
 </html>
