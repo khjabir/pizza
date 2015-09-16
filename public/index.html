@@ -1,6 +1,6 @@
 <html ng-app="pizzaApp">
   <head>
-  </head>
+    </head>
     <meta charset="utf-8">
     <title>Xperion Pizza</title>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.1/angular.min.js"></script>
@@ -116,6 +116,7 @@
       http.post('/pizzadata').success(function(data) {
         scope.details = data;
       });
+      scope.pizzaList = cartService.list();
       scope.finishOrder = function() {
         scope.pizzaList = cartService.list();
         scope.user.order = scope.pizzaList;
@@ -127,6 +128,7 @@
           headers : {'Content-Type': 'application/json'} 
          })
         .success(function(data) {
+          cartService.deleteAll();
           if (data.errors) {
             scope.errorName = data.errors.name;
             scope.errorUserName = data.errors.username;
@@ -135,7 +137,6 @@
             scope.message = data.message;
           }
         });
-        cartService.deleteAll();
       }
     }]);
     </script>

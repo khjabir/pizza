@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html ng-app = "pizzaAdmin">
+<title>Pizza Orders</title>
 <link rel="stylesheet" href = "http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
 <script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.1/angular.min.js"></script>
 <head>
 </head>
@@ -10,12 +12,16 @@
 	adminApp.controller('orderCtrl',['$scope', '$http', function(scope,http) {
 		http.post('/adminCtrl').success(function(data) {
           scope.orders = data;
-          scope.items = data[0].order;
 		});
+		scope.show = false;
+		scope.showOrder = function(item) {
+			scope.items = item;
+			scope.show = true;
+		}
 	}]);
 </script>
-<body>
-<table ng-controller="orderCtrl" class="table table-striped">
+<body ng-controller="orderCtrl">
+<table class="table table-striped">
   <thead>
     <tr>
       <th><center>Name</center></th>
@@ -30,19 +36,7 @@
     <td><center>{{order.name}}</center></td>
       <td><center>{{order.address}}</center></td>
       <td><center>{{order.mob}}</center></td>
-      <td><center>
-      <table>
-      <thead>
-      	<th><center>Pizza</center></th>
-      	<th><center>Quantity</center></th>
-      </thead>
-      <tr ng-repeat="item in items">
-      	<td>{{item.name}}</td>
-      	<td><center>{{item.qty}}</center></td>
-      </tr>
-      </table>
-      </center>
-      </td>
+      <td><center><a href="" ng-click="showOrder(order.order)">Show</a></center></td>
       <!-- <td><center>
         <button class="btn" ng-click = "deliver()">{{order.orderStatus}}
         </button>
@@ -51,5 +45,29 @@
     </tr>
   </tbody>
 </table>
+
+
+<div class="img" ng-show="show" align="center">
+<table border="1px">
+<thead>
+<tr>
+	<th colspan="2"> <center>Order Details</center></th>
+</tr>
+</thead>
+<tbody>
+	<tr ng-repeat="item in items">
+      	<td width="50%"><center>{{item.name}}</center></td>
+      	<td width="50%"><center>{{item.qty}}</center></td>
+    </tr>
+</tbody>
+</table>
+
+<label>Delivery Status:
+  <input type="checkbox" ng-model="checkboxModel.value2"
+           ng-true-value="'YES'" ng-false-value="'NO'">
+   </label><br/>
+</div>
+
+
 </body>
 </html>
