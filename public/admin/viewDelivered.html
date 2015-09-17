@@ -1,7 +1,6 @@
 <link rel="stylesheet" href = "http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
 <body>
-<a href="#/delivered">View Delivered Orders</a>
 <table class="table table-striped">
   <thead>
     <tr>
@@ -22,7 +21,7 @@
       		{{item.name}} - {{item.qty}}
       	</ul>
  	  </td>
-    <td><center>{{order.deliveryStatus}}<br><a href="" ng-click = "deliver(order._id)">Deliver</a></center></td>
+    <td><center>{{order.deliveryStatus}}</a></center></td>
     </tr>
   </tbody>
 </table>

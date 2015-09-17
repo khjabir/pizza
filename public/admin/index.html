@@ -35,7 +35,11 @@
           		templateUrl: 'login.html',
           		controller: 'loginCtrl'
         	}).
-        	when('/#/orders', { 		//to implement $location.path for routing
+        	when('/delivered', {
+          	templateUrl: 'viewDelivered.html',
+          	controller: 'deliveredCtrl'
+        	}).
+        	when('/#/orders', { 		// "/#/orders" is to implement $location.path for routing
           	templateUrl: 'viewOrders.html',
           	controller: 'orderCtrl'
         	}).
@@ -43,6 +47,17 @@
           		redirectTo: '/'
         	});
     	});
+
+    	adminApp.controller('deliveredCtrl', ['$scope', '$http', '$location', 'loginService', function (scope, http, location, loginService){
+    		if(loginService.list()==0)
+			{
+				location.path("/login");
+			} else {
+    			http.post('/delivered').success(function(data) {
+      				scope.orders = data;
+    			});
+    		}
+  		}]);
 
 		adminApp.controller('loginCtrl',['$scope', '$http', '$location', 'loginService', function(scope, http, location, loginService) {
 
