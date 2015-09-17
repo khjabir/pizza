@@ -1,123 +1,113 @@
 <!DOCTYPE html>
 <html ng-app = "pizzaAdmin">
-<title>Pizza Orders</title>
-<link rel="stylesheet" href = "http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
-<script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.1/angular.min.js"></script>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.10/angular-route.min.js"></script>
-<head>
-<h1>Admin</h1>
-</head>
-<script>
-	var i=0;
-	var adminApp = angular.module('pizzaAdmin',['ngRoute']);
+	<title>Pizza Orders</title>
+	<head>
+		<link rel = "stylesheet" href = "http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+		<link rel = "stylesheet" type = "text/css" href = "../stylesheets/style.css">
+		<script src = "http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.1/angular.min.js"></script>
+		<script src = "http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.10/angular-route.min.js"></script>
+	</head>
+	<script>
+		var i=0;
+		var adminApp = angular.module('pizzaAdmin',['ngRoute']);
 
-	adminApp.service('loginService', function() {
-		var login = 0;
+		//service to ensure whether admin is logged in or not?
+		adminApp.service('loginService', function() {
+			var login = 0;
 
-		this.loginSuccess = function() {
-			login = 1;
-		}
+			this.notLogged = function() {
+				login = 0;
+			}
 
-		this.list = function() {
-			return login;
-		}
+			this.loginSuccess = function() {
+				login = 1;
+			}
 
-	});
+			this.list = function() {
+				return login;
+			}
 
-	adminApp.config(function($routeProvider) {
-      $routeProvider.
-        when('/', {
-          templateUrl: 'login.html',
-          controller: 'loginCtrl'
-        }).
-        when('/orders', {
-          templateUrl: 'viewOrders.html',
-          controller: 'orderCtrl'
-        }).
-        otherwise({
-          redirectTo: '/'
-        });
-    });
-
-
-	adminApp.controller('loginCtrl',['$scope', '$http', 'loginService', function(scope,http,loginService) {
-
-		scope.validate = function() {
-		http({
-          method  : 'POST',
-          url     : '/loginCtrl',
-          data    : scope.user,
-          headers : {'Content-Type': 'application/json'} 
-         })
-        .success(function(data) {
-        	console.log(data);
-        	if(data=='success') {
-        		// alert('Login Successful');
-        		loginService.loginSuccess();
-        	}
-        	else {
-        		alert('Login Failed');
-        	}
-        });
-    }
-	}]);
-
-	adminApp.controller('orderCtrl',['$scope', '$http', '$location', 'loginService', function(scope, http, location, loginService) {
-		if(loginService.list()==0)
-		{
-			// alert('Please Login to Continue');
-			location.path("/login");
-		}
-		else {
-		http.post('/adminCtrl').success(function(data) {
-          scope.orders = data;
-          if(data == 'Nothing Found' ) {
-          	alert('Nothing to Display');
-          	scope.orders={};
-          }
 		});
 
-		scope.deliver = function(item) {
-			scope.obj = {};
-			scope.obj.name = item;
-			console.log(scope.obj);
-		http({
-          method  : 'POST',
-          url     : '/deliverCtrl',
-          data    : scope.obj,
-          headers : {'Content-Type': 'application/json'} 
-         })
-        .success(function(data) {
-        	console.log(data);
-        	if(data=='success') {
-        		alert('Delivered');
-        	}
-        	else
-        		alert('Not Delivered');
-          if (data.errors) {
-            scope.errorName = data.errors.name;
-            scope.errorUserName = data.errors.username;
-            scope.errorEmail = data.errors.email;
-          } else {
-            scope.message = data.message;
-          }
-        });
+		adminApp.config(function($routeProvider) {
+      		$routeProvider.
+        	when('/', {
+          		templateUrl: 'login.html',
+          		controller: 'loginCtrl'
+        	}).
+        	when('/#/orders', { 		//to implement $location.path for routing
+          	templateUrl: 'viewOrders.html',
+          	controller: 'orderCtrl'
+        	}).
+        	otherwise({
+          		redirectTo: '/'
+        	});
+    	});
 
-        http.post('/adminCtrl').success(function(data) {
-          scope.orders = data;
-          if(data == 'Nothing Found' ) {
-          	alert('Nothing to Display');
-          	scope.orders={};
-          }
-		});
+		adminApp.controller('loginCtrl',['$scope', '$http', '$location', 'loginService', function(scope, http, location, loginService) {
 
-    }
-}
+			scope.validate = function() {
+				loginService.notLogged();
+				http({
+        	  	method  : 'POST',
+          		url     : '/loginCtrl',
+          		data    : scope.user,
+          		headers : {'Content-Type': 'application/json'} 
+         		})
+        		.success(function(data) {
+        			if(data == 'success') {
+        				alert('Login Successful');
+        				loginService.loginSuccess();
+        				location.path('#/orders');
+        			} else {
+        				loginService.notLogged();
+        				alert('Login Failed');
+        				location.path('#');
+        			}
+        		});
+    		}
+		}]);
 
+		adminApp.controller('orderCtrl',['$scope', '$http', '$location', 'loginService', function(scope, http, location, loginService) {
+			if(loginService.list()==0)
+			{
+				location.path("/login");
+			} else {
+				http.post('/adminCtrl').success(function(data) {
+          			scope.orders = data;
+          			if(data == 'Nothing Found' ) {
+          			alert('Nothing to Display');
+          			scope.orders={};
+          			}
+				});
 
-	}]);
-</script>
-<body ng-view>
-</body>
+				scope.deliver = function(item) {
+					scope.obj = {};
+					scope.obj.name = item;
+					http({
+        				method  : 'POST',
+          				url     : '/deliverCtrl',
+          				data    : scope.obj,
+          				headers : {'Content-Type': 'application/json'} 
+         			})
+        			.success(function(data) {
+        				if(data=='success') {
+        					alert('Delivered');
+        				} else {
+        					alert('Not Delivered');
+        				}
+        			});
+		        	http.post('/adminCtrl').success(function(data) {
+		        		scope.orders = data;
+          				if(data == 'Nothing Found' ) {
+          					alert('Nothing to Display');
+          					scope.orders={};
+          				}
+					});
+	    		}
+			}
+		}]);
+	</script>
+	<body ng-view>
+	</body>
 </html>

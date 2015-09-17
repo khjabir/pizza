@@ -3,7 +3,7 @@ var router = express.Router();
 
 router.all('/', function(req, res, next) {
 
-  console.log("body is: "+req.body.name);
+  var idVal = req.body.name;
 
   var mongodb = require('mongodb');
   var MongoClient = mongodb.MongoClient;
@@ -15,9 +15,10 @@ router.all('/', function(req, res, next) {
     } else {
       console.log('Connection established to', url);
       var collection = db.collection('orderDetails');
+      var obj_id = new mongodb.ObjectId(idVal);
 
+      collection.update({"_id":obj_id},{$set:{'deliveryStatus':'Deliverd'}}, function (err, numUpdated) {
 
-      collection.update({"mob":req.body.name},{$set:{'deliveryStatus':'Deliverd'}}, function (err, numUpdated) {
         if (err) {
           console.log(err);
         } else if (numUpdated) {

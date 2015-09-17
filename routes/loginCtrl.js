@@ -3,9 +3,9 @@ var router = express.Router();
 
 router.all('/', function(req, res, next) {
 
-  console.log("username = "+req.body.name);
-  console.log("password = "+req.body.password);
-
+  //assume that username="admin" and password="admin"
+  //can also be implemented by means of database look-up for matching combination
+  
   if(req.body.name!=undefined) {
     if(req.body.name=="admin")
       if(req.body.password=="admin")

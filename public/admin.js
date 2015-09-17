@@ -1,15 +1,4 @@
-<html ng-app="pizzaApp">
-  <head>
-    </head>
-    <meta charset="utf-8">
-    <title>Xperion Pizza</title>
-  <body ng-view>
-
-  <script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.1/angular.min.js"></script>
-  <script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.10/angular-route.min.js"></script>
-
-  <script>
-    var pizzaApp = angular.module('pizzaApp', ['ngRoute']);
+var pizzaApp = angular.module('pizzaApp', ['ngRoute']);
 
     //service to show the cost of selected number of pizza (quantity * rate)
     pizzaApp.service('costService', function() {
@@ -20,44 +9,44 @@
 
     //to maintain cart until placing the order
     pizzaApp.service('cartService', function () {
-      var pizid = 0;
+    var pizid = 0;
 
-      //pizza array stores the details of pizza that has been added to the cart
-      var pizzaArray = [];
+    //pizza array stores the details of pizza that has been added to the cart
+    var pizzaArray = [];
 
-      //function to add a pizza in to the cart
-      this.save = function (pizza) {
-        if (pizza.id == null) {
-          pizza.id = pizid++;
-          pizzaArray.push(pizza);
-        } else {
-          for (i in pizzaArray) {
-            if (pizzaArray[i].id == pizza.id) {
-              pizzaArray[i] = pizza;
-            }
-          }
-        }
-      }
-
-      //function to remove a pizza from the cart
-      this.delete = function (id) {
+    //function to add a pizza in to the cart
+    this.save = function (pizza) {
+      if (pizza.id == null) {
+        pizza.id = pizid++;
+        pizzaArray.push(pizza);
+      } else {
         for (i in pizzaArray) {
-          if (pizzaArray[i].id == id) {
-            pizzaArray.splice(i, 1);
+          if (pizzaArray[i].id == pizza.id) {
+            pizzaArray[i] = pizza;
           }
         }
       }
+    }
 
-      //function to delete the cart after placing the order
-      this.deleteAll = function () {
-        pizzaArray.splice(0, pizzaArray.length);
+    //function to remove a pizza from the cart
+    this.delete = function (id) {
+      for (i in pizzaArray) {
+        if (pizzaArray[i].id == id) {
+          pizzaArray.splice(i, 1);
+        }
       }
+    }
 
-      //function to return the current status of cart
-      this.list = function () {
-        return pizzaArray;
-      }
-    });
+    //function to delete the cart after placing the order
+    this.deleteAll = function () {
+      pizzaArray.splice(0, pizzaArray.length);
+    }
+
+    //function to return the current status of cart
+    this.list = function () {
+      return pizzaArray;
+    }
+  });
 
   pizzaApp.config(function($routeProvider) {
     $routeProvider.
@@ -160,6 +149,3 @@
       });
     }
   }]);
-  </script>
-  </body>
-</html>
