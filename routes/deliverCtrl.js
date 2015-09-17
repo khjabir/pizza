@@ -3,6 +3,8 @@ var router = express.Router();
 
 router.all('/', function(req, res, next) {
 
+  console.log("body is: "+req.body.name);
+
   var mongodb = require('mongodb');
   var MongoClient = mongodb.MongoClient;
   var url = 'mongodb://localhost:27017/pizzaDB';
@@ -14,19 +16,23 @@ router.all('/', function(req, res, next) {
       console.log('Connection established to', url);
       var collection = db.collection('orderDetails');
 
-      collection.find({"deliveryStatus":"Not Deliverd"}).toArray(function (err, result) {
+
+      collection.update({"mob":req.body.name},{$set:{'deliveryStatus':'Deliverd'}}, function (err, numUpdated) {
         if (err) {
           console.log(err);
-        } else if (result.length) {
-          console.log('Found:', JSON.stringify(result,null,2));
-          res.send(result);
+        } else if (numUpdated) {
+          console.log('Updated Successfully'+numUpdated+' document(s).');
+          res.send('success')
         } else {
-          console.log('No document(s) found with defined "find" criteria!');
-          res.send("Nothing Found")
+          console.log('No document found with defined "find" criteria!');
         }
       });
+
     }
   });
+
+
+
 });
 
 module.exports = router;

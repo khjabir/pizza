@@ -120,7 +120,7 @@
       scope.finishOrder = function() {
         scope.pizzaList = cartService.list();
         scope.user.order = scope.pizzaList;
-        scope.user.orderStatus = "Not Delivered"
+        scope.user.deliveryStatus = "Not Deliverd";
         http({
           method  : 'POST',
           url     : '/insertPizza',

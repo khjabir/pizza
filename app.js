@@ -11,6 +11,8 @@ var users = require('./routes/users');
 var pizzadata = require('./routes/pizzadata');
 var insertPizza = require('./routes/insertPizza');
 var adminCtrl = require('./routes/adminCtrl');
+var loginCtrl = require('./routes/loginCtrl');
+var deliverCtrl = require('./routes/deliverCtrl');
 
 var app = express();
 
@@ -31,6 +33,8 @@ app.use('/users', users);
 app.use('/pizzadata', pizzadata);
 app.use('/insertPizza', insertPizza);
 app.use('/adminCtrl', adminCtrl);
+app.use('/loginCtrl', loginCtrl);
+app.use('/deliverCtrl', deliverCtrl);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

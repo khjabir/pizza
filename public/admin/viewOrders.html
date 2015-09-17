@@ -1,26 +1,6 @@
-<!DOCTYPE html>
-<html ng-app = "pizzaAdmin">
-<title>Pizza Orders</title>
 <link rel="stylesheet" href = "http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
-<script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.1/angular.min.js"></script>
-<head>
-</head>
-<script>
-	var i=0;
-	var adminApp = angular.module('pizzaAdmin',[]);
-	adminApp.controller('orderCtrl',['$scope', '$http', function(scope,http) {
-		http.post('/adminCtrl').success(function(data) {
-          scope.orders = data;
-		});
-		scope.show = false;
-		scope.showOrder = function(item) {
-			scope.items = item;
-			scope.show = true;
-		}
-	}]);
-</script>
-<body ng-controller="orderCtrl">
+<body>
 <table class="table table-striped">
   <thead>
     <tr>
@@ -28,46 +8,23 @@
       <th><center>Address</center></th>
       <th><center>Mob</center></th>
       <th><center>Order</center></th>
+      <th><center>Delivery Status</center></th>
       <!-- <th><center>Status</center></th> -->
     </tr>
   </thead>
   <tbody>
     <tr ng-repeat="order in orders">
-    <td><center>{{order.name}}</center></td>
+      <td><center>{{order.name}}</center></td>
       <td><center>{{order.address}}</center></td>
       <td><center>{{order.mob}}</center></td>
-      <td><center><a href="" ng-click="showOrder(order.order)">Show</a></center></td>
-      <!-- <td><center>
-        <button class="btn" ng-click = "deliver()">{{order.orderStatus}}
-        </button>
-        </center>
-      </td> -->
+      <td>
+		<ul ng-repeat = "item in order.order">
+      		{{item.name}} - {{item.qty}}
+      	</ul>
+ 	  </td>
+ 		<!-- <td><center><a href="" ng-click="showOrder(order.order)">Show</a></center></td> -->
+    <td><center><a href="" ng-click = "deliver(order.mob)">{{order.deliveryStatus}}</a></center></td>
     </tr>
   </tbody>
 </table>
-
-
-<div class="img" ng-show="show" align="center">
-<table border="1px">
-<thead>
-<tr>
-	<th colspan="2"> <center>Order Details</center></th>
-</tr>
-</thead>
-<tbody>
-	<tr ng-repeat="item in items">
-      	<td width="50%"><center>{{item.name}}</center></td>
-      	<td width="50%"><center>{{item.qty}}</center></td>
-    </tr>
-</tbody>
-</table>
-
-<label>Delivery Status:
-  <input type="checkbox" ng-model="checkboxModel.value2"
-           ng-true-value="'YES'" ng-false-value="'NO'">
-   </label><br/>
-</div>
-
-
 </body>
-</html>
