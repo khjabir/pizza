@@ -115,6 +115,7 @@
     scope.pizzaList = cartService.list();
     scope.savePizza = function () {
       cartService.save(scope.newPizza);
+      alert('Added to cart')
       scope.newPizza = {};
     }
   }]);
@@ -156,6 +157,7 @@
         headers : {'Content-Type': 'application/json'} 
       })
       .success(function(data) {
+        alert('Order Succesful')
         cartService.deleteAll();
       });
     }
