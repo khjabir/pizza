@@ -95,7 +95,7 @@
 
   //controller for showing details of selected pizza
   //also add to cart functionality is handled here
-  pizzaApp.controller('pizzaDetailCtrl',['$scope', '$routeParams', '$http', 'cartService', 'costService', function (scope, routeParams, http, cartService, costService){
+  pizzaApp.controller('pizzaDetailCtrl',['$scope', '$routeParams', '$http', '$location', 'cartService', 'costService', function (scope, routeParams, http, location, cartService, costService){
     scope.name = routeParams.pizzadetails;
       
     http.post('/pizzadata').success(function(data) {
@@ -114,9 +114,16 @@
     //to implement add to cart functionality
     scope.pizzaList = cartService.list();
     scope.savePizza = function () {
-      cartService.save(scope.newPizza);
-      alert('Added to cart')
-      scope.newPizza = {};
+      if(scope.newPizza===undefined || scope.newPizza.qty=="")
+      {
+        alert('Please Select a Valid Quantity');
+        location.path('/'+scope.details.name);
+      } else {
+        cartService.save(scope.newPizza);
+        alert('Added to cart')
+        scope.newPizza = {};
+        location.path('/order')
+      }
     }
   }]);
 
@@ -137,13 +144,14 @@
   }]);
 
     //controller for managing the entered user details
-  pizzaApp.controller('userDetailCtrl',['$scope', '$http', 'cartService', function (scope, http, cartService){
-    http.post('/pizzadata').success(function(data) {
-      scope.details = data;
-    });
+  pizzaApp.controller('userDetailCtrl',['$scope', '$http', '$location', 'cartService', function (scope, http, location, cartService){
 
     scope.pizzaList = cartService.list();
-
+    console.log(scope.pizzaList);
+    if(scope.pizzaList.length==0) {
+      alert('Your Cart is Empty');
+      location.path('/home');
+    }else {
     //post the user details and cart to the server
     scope.finishOrder = function() {
       scope.pizzaList = cartService.list();
@@ -161,6 +169,7 @@
         cartService.deleteAll();
       });
     }
+  }
   }]);
   </script>
   </body>
